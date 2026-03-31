@@ -248,6 +248,47 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
 .terminal-cursor { display:inline-block; width:8px; height:14px; background:var(--neon); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:3px; }
 .disabled-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.7); z-index:100; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
 .points-flash { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Orbitron',sans-serif; font-size:3rem; font-weight:900; color:var(--neon); text-shadow:0 0 30px var(--neon); animation:fadeInUp 0.5s ease forwards, fadeIn 0.3s 1.5s reverse forwards; pointer-events:none; z-index:900; }
+
+/* ===== LEADERBOARD BUTTON ===== */
+.lb-btn { font-family:'Orbitron',sans-serif; font-size:0.62rem; font-weight:700; letter-spacing:2px; padding:5px 12px; border-radius:3px; border:1px solid rgba(0,170,255,0.35); background:rgba(0,170,255,0.05); color:var(--text-dim); cursor:pointer; transition:all 0.2s; }
+.lb-btn:hover { border-color:var(--neon); color:var(--neon); background:rgba(0,170,255,0.1); box-shadow:0 0 10px var(--neon-glow); }
+
+/* ===== LEADERBOARD SCREEN ===== */
+.lb-screen { position:fixed; inset:0; background:rgba(0,0,0,0.93); backdrop-filter:blur(12px); z-index:750; display:flex; align-items:center; justify-content:center; animation:fadeIn 0.3s ease; overflow:auto; }
+.lb-card { max-width:660px; width:92%; padding:36px 40px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; box-shadow:0 0 60px var(--neon-glow), inset 0 0 40px rgba(0,170,255,0.02); animation:successPop 0.35s ease; }
+.lb-title { font-family:'Orbitron',sans-serif; font-size:1.6rem; font-weight:900; color:var(--neon); letter-spacing:3px; text-align:center; animation:glitchText 6s 2s infinite; }
+.lb-subtitle { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--text-dim); letter-spacing:4px; text-align:center; margin-top:4px; margin-bottom:24px; }
+.lb-table { width:100%; border-collapse:collapse; }
+.lb-table th { font-family:'Share Tech Mono',monospace; font-size:0.62rem; letter-spacing:3px; color:var(--text-dim); text-transform:uppercase; padding:6px 10px; border-bottom:1px solid rgba(0,170,255,0.15); text-align:left; }
+.lb-table th:not(:first-child) { text-align:center; }
+.lb-row { border-bottom:1px solid rgba(0,170,255,0.06); transition:background 0.15s; }
+.lb-row:hover { background:rgba(0,170,255,0.04); }
+.lb-row td { padding:10px 10px; font-size:0.8rem; }
+.lb-row.top-1 td { color:var(--neon); }
+.lb-row.top-2 td { color:#88ccff; }
+.lb-row.top-3 td { color:#6699cc; }
+.lb-row.new-entry { animation:fadeInUp 0.5s ease; background:rgba(0,170,255,0.08) !important; }
+.lb-rank { font-family:'Orbitron',sans-serif; font-size:0.8rem; font-weight:700; width:36px; }
+.lb-name { font-family:'Share Tech Mono',monospace; letter-spacing:1px; }
+.lb-score { font-family:'Orbitron',sans-serif; font-weight:700; text-align:center; }
+.lb-solved { font-family:'Share Tech Mono',monospace; text-align:center; color:var(--text-dim); font-size:0.75rem; }
+.lb-time { font-family:'Share Tech Mono',monospace; text-align:center; color:var(--text-dim); font-size:0.75rem; }
+.lb-date { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:var(--text-dim); text-align:center; }
+.lb-medal { font-size:1rem; margin-right:4px; }
+.lb-empty { text-align:center; padding:40px 0; font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:var(--text-dim); letter-spacing:2px; }
+
+/* ===== NAME ENTRY MODAL ===== */
+.name-modal { background:var(--bg2); border:1px solid var(--neon); border-radius:8px; padding:36px; max-width:420px; width:90%; box-shadow:0 0 50px var(--neon-glow), inset 0 0 30px rgba(0,170,255,0.03); animation:successPop 0.4s ease; text-align:center; }
+.name-input { width:100%; background:rgba(0,170,255,0.04); border:1px solid rgba(0,170,255,0.3); border-radius:4px; color:var(--neon); font-family:'Orbitron',sans-serif; font-size:1.1rem; font-weight:700; letter-spacing:3px; padding:12px 16px; outline:none; text-align:center; text-transform:uppercase; transition:all 0.2s; margin:18px 0; }
+.name-input:focus { border-color:var(--neon); box-shadow:0 0 15px var(--neon-glow); }
+.name-input::placeholder { color:rgba(0,170,255,0.25); font-size:0.8rem; letter-spacing:4px; }
+
+/* ===== NEW RECORD FLASH ===== */
+@keyframes newRecord {
+  0%,100% { text-shadow:0 0 10px var(--neon),0 0 30px var(--neon-glow); }
+  50% { text-shadow:0 0 25px var(--neon),0 0 60px var(--neon-glow),0 0 100px rgba(0,170,255,0.4); }
+}
+.new-record-badge { font-family:'Orbitron',sans-serif; font-size:0.75rem; font-weight:700; color:var(--neon); letter-spacing:3px; padding:4px 14px; border:1px solid var(--neon); border-radius:3px; display:inline-block; animation:newRecord 1s ease infinite; margin-bottom:14px; }
 </style>
 </head>
 <body>
@@ -302,7 +343,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 // ===== QUESTIONS DATA =====
 
 const QUESTIONS = [
-{
+/*{
   id: 1,
   title: "Two Sum",
   difficulty: "EASY",
@@ -451,7 +492,7 @@ const QUESTIONS = [
       { pattern: /j\s*=\s*i\s*\+\s*1/, description: 'Inner loop j should start at i+1' }
     ]
   }
-},
+},*/
 {
   id: 2,
   title: "FizzBuzz Fix",
@@ -909,7 +950,7 @@ const QUESTIONS = [
     javascript: `function count(arr, target) {
   let c = 0;
   for (let i = 0; i <= arr.length; i++) { 
-    if (arr[i] === target) c=1;
+    if (arr[i] === target) c++;
   }
   return c;
 }`,
@@ -1000,11 +1041,514 @@ const QUESTIONS = [
       { pattern: /i\s*<\s*n(?!\s*\+)/, description: 'Change <= n to < n' }
     ]
   }
+},
+{
+  id: 7,
+  title: "Binary Search",
+  difficulty: "MEDIUM",
+  points: 120,
+  category: "Search",
+
+  description: "Given a sorted array and a target value, return the index of the target using binary search. Return -1 if not found.",
+
+  constraints: ["1 ≤ nums.length ≤ 10⁴", "-10⁹ ≤ nums[i] ≤ 10⁹", "Array is sorted ascending"],
+
+  examples: [
+    { input: "nums=[1,3,5,7,9], target=5", output: "2" }
+  ],
+
+  hints: [
+    "Check the while loop boundary: < vs <=",
+    "When left === right there may still be a valid match"
+  ],
+
+  buggyCode: {
+    javascript: `function binarySearch(nums, target) {
+  let left = 0, right = nums.length - 1;
+  while (left < right) {
+    let mid = Math.floor((left + right) / 2);
+    if (nums[mid] === target) return mid;
+    else if (nums[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
+}`,
+    python: `def binary_search(nums, target):
+    left, right = 0, len(nums) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1`,
+    cpp: `int binarySearch(vector<int>& nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}`,
+    java: `public int binarySearch(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}`,
+    c: `int binarySearch(int* nums, int n, int target) {
+    int left = 0, right = n - 1;
+    while (left < right) {
+        int mid = (left + right) / 2;
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}`
+  },
+
+  solution: {
+    javascript: `function binarySearch(nums, target) {
+  let left = 0, right = nums.length - 1;
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    if (nums[mid] === target) return mid;
+    else if (nums[mid] < target) left = mid + 1;
+    else right = mid - 1;
+  }
+  return -1;
+}`
+  },
+
+  testCode: {
+    javascript: `
+      const r1 = binarySearch([1,3,5,7,9], 5);
+      const r2 = binarySearch([1,3,5,7,9], 9);
+      const r3 = binarySearch([1,3,5,7,9], 1);
+      const r4 = binarySearch([1,3,5,7,9], 4);
+      if (r1===2 && r2===4 && r3===0 && r4===-1)
+        console.log("ALL_PASS");
+      else console.log("FAIL: got " + [r1,r2,r3,r4].join(", "));
+    `
+  },
+
+  testCases: [
+    { label: "target=5 in [1,3,5,7,9]", expected: "2", wrongOutput: "-1 (misses last)" },
+    { label: "target=9 in [1,3,5,7,9]", expected: "4", wrongOutput: "-1 (misses last)" },
+    { label: "target=4 (not found)", expected: "-1", wrongOutput: "wrong" }
+  ],
+
+  validator: `function binarySearch(nums,target){let l=0,r=nums.length-1;while(l<=r){let m=Math.floor((l+r)/2);if(nums[m]===target)return m;if(nums[m]<target)l=m+1;else r=m-1;}return -1;}`,
+  validatorRunner: `
+    const cases=[[[1,3,5,7,9],5,2],[[1,3,5,7,9],9,4],[[1,3,5,7,9],1,0],[[1,3,5,7,9],4,-1]];
+    let pass=true;
+    cases.forEach(([arr,t,exp])=>{const got=binarySearch(arr,t);if(got!==exp){console.log("FAIL: binarySearch("+JSON.stringify(arr)+","+t+")="+got+" exp "+exp);pass=false;}});
+    if(pass)console.log("ALL_PASS");
+  `,
+
+  solvedBy: false,
+
+  fixChecks: {
+    javascript: [{ pattern: /while\s*\(\s*left\s*<=\s*right\s*\)/, description: 'Change while(left < right) to while(left <= right)' }],
+    python:     [{ pattern: /while\s+left\s*<=\s*right/,           description: 'Change while left < right to while left <= right' }],
+    cpp:        [{ pattern: /while\s*\(\s*left\s*<=\s*right\s*\)/, description: 'Change while(left < right) to while(left <= right)' }],
+    java:       [{ pattern: /while\s*\(\s*left\s*<=\s*right\s*\)/, description: 'Change while(left < right) to while(left <= right)' }],
+    c:          [{ pattern: /while\s*\(\s*left\s*<=\s*right\s*\)/, description: 'Change while(left < right) to while(left <= right)' }]
+  }
+},
+{
+  id: 8,
+  title: "Valid Anagram",
+  difficulty: "EASY",
+  points: 80,
+  category: "Strings",
+
+  description: "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
+
+  constraints: ["1 ≤ s.length ≤ 5×10⁴", "s and t consist of lowercase letters only"],
+
+  examples: [
+    { input: `s="anagram", t="nagaram"`, output: "true" },
+    { input: `s="rat", t="car"`, output: "false" }
+  ],
+
+  hints: [
+    "Sort both strings and compare — but arrays can't be compared with ===",
+    "Convert sorted arrays back to strings with .join('') before comparing"
+  ],
+
+  buggyCode: {
+    javascript: `function isAnagram(s, t) {
+  if (s.length !== t.length) return false;
+  return s.split("").sort() === t.split("").sort();
+}`,
+    python: `def is_anagram(s, t):
+    if len(s) == len(t):
+        return False
+    return sorted(s) = sorted(t)`,
+    cpp: `bool isAnagram(string s, string t) {
+    if (s.length() != t.length()) return false;
+    sort(s.begin(), s.end());
+    sort(t.begin(), t.end());
+    return s = t;
+}`,
+    java: `public boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+    char[] a = s.toCharArray(), b = t.toCharArray();
+    java.util.Arrays.sort(a); java.util.Arrays.sort(b);
+    return a == b;
+}`,
+    c: `int isAnagram(char* s, char* t) {
+    int count[26] = {0};
+    for (int i = 0; s[i]; i++) count[s[i]-'a']++;
+    for (int i = 0; t[i]; i++) count[t[i]-'a']++;
+    for (int i = 0; i < 26; i++) if (count[i] != 0) return 0;
+    return 1;
+}`
+  },
+
+  solution: {
+    javascript: `function isAnagram(s, t) {
+  if (s.length !== t.length) return false;
+  return s.split("").sort().join("") === t.split("").sort().join("");
+}`
+  },
+
+  testCode: {
+    javascript: `
+      const r1 = isAnagram("anagram", "nagaram");
+      const r2 = isAnagram("rat", "car");
+      const r3 = isAnagram("a", "a");
+      const r4 = isAnagram("ab", "ba");
+      if (r1===true && r2===false && r3===true && r4===true)
+        console.log("ALL_PASS");
+      else console.log("FAIL: got " + [r1,r2,r3,r4].join(", "));
+    `
+  },
+
+  testCases: [
+    { label: "anagram/nagaram", expected: "true",  wrongOutput: "false (array ref compare)" },
+    { label: "rat/car",         expected: "false", wrongOutput: "wrong" },
+    { label: "ab/ba",           expected: "true",  wrongOutput: "false" }
+  ],
+
+  validator: `function isAnagram(s,t){if(s.length!==t.length)return false;return s.split("").sort().join("")===t.split("").sort().join("");}`,
+  validatorRunner: `
+    const cases=[["anagram","nagaram",true],["rat","car",false],["a","a",true],["ab","ba",true],["abc","cba",true]];
+    let pass=true;
+    cases.forEach(([s,t,exp])=>{const got=isAnagram(s,t);if(got!==exp){console.log("FAIL: isAnagram("+s+","+t+")="+got+" exp "+exp);pass=false;}});
+    if(pass)console.log("ALL_PASS");
+  `,
+
+  solvedBy: false,
+
+  fixChecks: {
+    javascript: [{ pattern: /\.sort\(\)\s*\.join\(\s*["']["']\s*\)\s*===\s*.+\.sort\(\)\s*\.join\(\s*["']["']\s*\)/, description: 'Add .join("") after .sort() to convert array to string before comparing' }],
+    python:     [{ pattern: /sorted\s*\(\s*s\s*\)\s*==\s*sorted\s*\(\s*t\s*\)/,                                     description: 'Python sorted() comparison is correct — submit to verify' }],
+    cpp:        [{ pattern: /return\s+s\s*==\s*t/,                                                                   description: 'Fix assignment: use == for comparison not = (assignment)' }],
+    java:       [{ pattern: /Arrays\.equals\s*\(\s*a\s*,\s*b\s*\)/,                                                  description: 'Use Arrays.equals(a, b) instead of a == b for char array comparison' }],
+    c:          [{ pattern: /count\[t\[i\]-'a'\]--/,                                                                 description: 'Decrement count for t characters: count[t[i]-\'a\']-- (not ++)' }]
+  }
+},
+{
+  id: 9,
+  title: "Fibonacci Number",
+  difficulty: "EASY",
+  points: 70,
+  category: "Math",
+
+  description: "Return the nth Fibonacci number. F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2).",
+
+  constraints: ["0 ≤ n ≤ 30"],
+
+  examples: [
+    { input: "n = 5", output: "5" },
+    { input: "n = 0", output: "0" }
+  ],
+
+  hints: [
+    "Base cases: F(0) = 0, F(1) = 1 — not both 1",
+    "The fix is in the return value of the base case"
+  ],
+
+  buggyCode: {
+    javascript: `function fib(n) {
+  if (n <= 1) return 1;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) {
+    let c = a + b;
+    a = b;
+    b = c;
+  }
+  return b;
+}`,
+    python: `def fib(n):
+    if n <= 1:
+        return 1
+    a, b = 0, 1
+    for i in range(2, n + 1):
+        a, b = b, a + b
+    return b`,
+    cpp: `int fib(int n) {
+    if (n <= 1) return 1;
+    int a = 0, b = 1;
+    for (int i = 2; i <= n; i++) {
+        int c = a + b; a = b; b = c;
+    }
+    return b;
+}`,
+    java: `public int fib(int n) {
+    if (n <= 1) return 1;
+    int a = 0, b = 1;
+    for (int i = 2; i <= n; i++) {
+        int c = a + b; a = b; b = c;
+    }
+    return b;
+}`,
+    c: `int fib(int n) {
+    if (n <= 1) return 1;
+    int a = 0, b = 1;
+    for (int i = 2; i <= n; i++) {
+        int c = a + b; a = b; b = c;
+    }
+    return b;
+}`
+  },
+
+  solution: {
+    javascript: `function fib(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) {
+    let c = a + b;
+    a = b;
+    b = c;
+  }
+  return b;
+}`
+  },
+
+  testCode: {
+    javascript: `
+      const r1 = fib(0);
+      const r2 = fib(1);
+      const r3 = fib(5);
+      const r4 = fib(10);
+      if (r1===0 && r2===1 && r3===5 && r4===55)
+        console.log("ALL_PASS");
+      else console.log("FAIL: got " + [r1,r2,r3,r4].join(", "));
+    `
+  },
+
+  testCases: [
+    { label: "n=0 → 0",  expected: "0",  wrongOutput: "1 (wrong base case)" },
+    { label: "n=5 → 5",  expected: "5",  wrongOutput: "8 (shifted by 1)" },
+    { label: "n=10 → 55", expected: "55", wrongOutput: "89 (shifted by 1)" }
+  ],
+
+  validator: `function fib(n){if(n<=1)return n;let a=0,b=1;for(let i=2;i<=n;i++){let c=a+b;a=b;b=c;}return b;}`,
+  validatorRunner: `
+    const cases=[[0,0],[1,1],[2,1],[5,5],[10,55],[6,8]];
+    let pass=true;
+    cases.forEach(([n,exp])=>{const got=fib(n);if(got!==exp){console.log("FAIL: fib("+n+")="+got+" exp "+exp);pass=false;}});
+    if(pass)console.log("ALL_PASS");
+  `,
+
+  solvedBy: false,
+
+  fixChecks: {
+    javascript: [{ pattern: /if\s*\(\s*n\s*<=\s*1\s*\)\s*return\s+n/, description: 'Base case must return n (not 1): fib(0)=0, fib(1)=1' }],
+    python:     [{ pattern: /if\s+n\s*<=\s*1\s*:\s*return\s+n/,       description: 'Base case must return n (not 1)' }],
+    cpp:        [{ pattern: /if\s*\(\s*n\s*<=\s*1\s*\)\s*return\s+n/, description: 'Base case must return n (not 1)' }],
+    java:       [{ pattern: /if\s*\(\s*n\s*<=\s*1\s*\)\s*return\s+n/, description: 'Base case must return n (not 1)' }],
+    c:          [{ pattern: /if\s*\(\s*n\s*<=\s*1\s*\)\s*return\s+n/, description: 'Base case must return n (not 1)' }]
+  }
+},
+{
+  id: 10,
+  title: "Remove Duplicates",
+  difficulty: "MEDIUM",
+  points: 100,
+  category: "Arrays",
+
+  description: "Given a sorted array, remove duplicates in-place and return the count of unique elements.",
+
+  constraints: ["1 ≤ nums.length ≤ 3×10⁴", "Array is sorted ascending"],
+
+  examples: [
+    { input: "nums=[1,1,2]", output: "2 (unique count)" },
+    { input: "nums=[0,0,1,1,2,3]", output: "4" }
+  ],
+
+  hints: [
+    "Use a slow pointer k — it should start at 1, not 0",
+    "The first element is always unique, so k=1 is safe"
+  ],
+
+  buggyCode: {
+    javascript: `function removeDuplicates(nums) {
+  let k = 0;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] !== nums[i - 1]) {
+      nums[k] = nums[i];
+      k++;
+    }
+  }
+  return k;
+}`,
+    python: `def remove_duplicates(nums):
+    k = 0
+    for i in range(1, len(nums)):
+        if nums[i] != nums[i - 1]:
+            nums[k] = nums[i]
+            k += 1
+    return k`,
+    cpp: `int removeDuplicates(vector<int>& nums) {
+    int k = 0;
+    for (int i = 1; i < nums.size(); i++) {
+        if (nums[i] != nums[i-1]) {
+            nums[k] = nums[i];
+            k++;
+        }
+    }
+    return k;
+}`,
+    java: `public int removeDuplicates(int[] nums) {
+    int k = 0;
+    for (int i = 1; i < nums.length; i++) {
+        if (nums[i] != nums[i-1]) {
+            nums[k] = nums[i];
+            k++;
+        }
+    }
+    return k;
+}`,
+    c: `int removeDuplicates(int* nums, int n) {
+    int k = 0;
+    for (int i = 1; i < n; i++) {
+        if (nums[i] != nums[i-1]) {
+            nums[k] = nums[i];
+            k++;
+        }
+    }
+    return k;
+}`
+  },
+
+  solution: {
+    javascript: `function removeDuplicates(nums) {
+  let k = 1;
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] !== nums[i - 1]) {
+      nums[k] = nums[i];
+      k++;
+    }
+  }
+  return k;
+}`
+  },
+
+  testCode: {
+    javascript: `
+      const r1 = removeDuplicates([1,1,2]);
+      const r2 = removeDuplicates([0,0,1,1,2,3]);
+      const r3 = removeDuplicates([1]);
+      const r4 = removeDuplicates([1,2,3]);
+      if (r1===2 && r2===4 && r3===1 && r4===3)
+        console.log("ALL_PASS");
+      else console.log("FAIL: got " + [r1,r2,r3,r4].join(", "));
+    `
+  },
+
+  testCases: [
+    { label: "[1,1,2]",       expected: "2", wrongOutput: "1 (off by one)" },
+    { label: "[0,0,1,1,2,3]", expected: "4", wrongOutput: "3 (off by one)" },
+    { label: "[1]",           expected: "1", wrongOutput: "0" }
+  ],
+
+  validator: `function removeDuplicates(nums){let k=1;for(let i=1;i<nums.length;i++)if(nums[i]!==nums[i-1])nums[k++]=nums[i];return k;}`,
+  validatorRunner: `
+    const cases=[[[1,1,2],2],[[0,0,1,1,2,3],4],[[1],1],[[1,2,3],3],[[1,1,1,2],2]];
+    let pass=true;
+    cases.forEach(([arr,exp])=>{const got=removeDuplicates([...arr]);if(got!==exp){console.log("FAIL: removeDuplicates("+JSON.stringify(arr)+")="+got+" exp "+exp);pass=false;}});
+    if(pass)console.log("ALL_PASS");
+  `,
+
+  solvedBy: false,
+
+  fixChecks: {
+    javascript: [{ pattern: /let\s+k\s*=\s*1/,  description: 'Initialize k to 1 (not 0) — first element is always unique' }],
+    python:     [{ pattern: /k\s*=\s*1/,          description: 'Initialize k to 1 (not 0)' }],
+    cpp:        [{ pattern: /int\s+k\s*=\s*1/,    description: 'Initialize k to 1 (not 0)' }],
+    java:       [{ pattern: /int\s+k\s*=\s*1/,    description: 'Initialize k to 1 (not 0)' }],
+    c:          [{ pattern: /int\s+k\s*=\s*1/,    description: 'Initialize k to 1 (not 0)' }]
+  }
 }
 ];
 
-const TOTAL_TIME = 20 * 60; 
-const STORAGE_KEY = 'debug_terminal_v4';
+const TOTAL_TIME = 10 * 60;
+const SESSION_SIZE = 5;
+const STORAGE_KEY = 'debug_terminal_v5';
+
+// Pick SESSION_SIZE questions at random from the full pool each session
+function pickRandomQuestions() {
+  const pool = [...QUESTIONS];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, SESSION_SIZE);
+}
+
+// ===== LEADERBOARD HELPERS =====
+const LB_KEY = 'debug_terminal_leaderboard_v1';
+const LB_MAX = 10;
+
+function loadLeaderboard() {
+  try {
+    const raw = localStorage.getItem(LB_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveLeaderboard(entries) {
+  localStorage.setItem(LB_KEY, JSON.stringify(entries));
+}
+
+function addLeaderboardEntry(name, score, solved, total, timeUsed, questions) {
+  const entries = loadLeaderboard();
+  const mins = Math.floor(timeUsed / 60);
+  const secs = timeUsed % 60;
+  const maxScore = questions.reduce((s, q) => s + q.points, 0);
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  const rank = pct >= 90 ? 'ELITE HACKER' : pct >= 70 ? 'SKILLED OPERATIVE' : pct >= 50 ? 'JUNIOR ANALYST' : 'SCRIPT KIDDIE';
+  const entry = {
+    name: (name || 'ANONYMOUS').toUpperCase().slice(0, 12),
+    score,
+    solved,
+    total,
+    timeUsed,
+    timeStr: `${mins}m ${secs.toString().padStart(2, '0')}s`,
+    rank,
+    pct,
+    date: new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short' }),
+    ts: Date.now()
+  };
+  entries.push(entry);
+  entries.sort((a, b) => b.score - a.score || a.timeUsed - b.timeUsed);
+  const trimmed = entries.slice(0, LB_MAX);
+  saveLeaderboard(trimmed);
+  return trimmed.findIndex(e => e.ts === entry.ts);
+}
 
 // ===== EXECUTION ENGINE — SOLUTION COMPARISON (100% offline) =====
 //
@@ -1189,7 +1733,8 @@ function LoadingScreen({ onComplete }) {
   const [logs, setLogs] = useState([]);
   const bootLogs = [
     '> Initializing cyber arena...',
-    '> Loading question database...',
+    '> Loading question database (10 challenges)...',
+    '> Shuffling question pool — selecting 5 at random...',
     '> Connecting to execution sandbox...',
     '> Multi-language runtime ready (JS/Python/C++/Java/C)...',
     '> Injecting bugs into codebase...',
@@ -1225,9 +1770,9 @@ function LoadingScreen({ onComplete }) {
       </div>
       <div style={{position:'relative',zIndex:1,textAlign:'center'}}>
         <div className="loading-logo">DEBUG TERMINAL</div>
-        <div className="loading-subtitle">CYBER ARENA v2.0</div>
+        <div className="loading-subtitle">CODE FIX</div>
         <div style={{marginTop:'14px',fontFamily:"'Share Tech Mono'",fontSize:'0.7rem',color:'var(--text-dim)',letterSpacing:'4px'}}>
-          HACKER CHALLENGE SYSTEM
+          DEBUGGER CHALLENGE SYSTEM
         </div>
         <div className="loading-bar-container">
           <div className="loading-bar-fill" style={{width:`${progress}%`, transition:'width 0.3s ease'}}></div>
@@ -1245,7 +1790,7 @@ function LoadingScreen({ onComplete }) {
 }
 
 // ===== HEADER =====
-function Header({ timeLeft, currentQ, questions, score, onQSelect, solvedSet }) {
+function Header({ timeLeft, currentQ, questions, score, onQSelect, solvedSet, onShowLeaderboard }) {
   const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
   const seconds = (timeLeft % 60).toString().padStart(2, '0');
   const isUrgent = timeLeft < 300;
@@ -1263,7 +1808,10 @@ function Header({ timeLeft, currentQ, questions, score, onQSelect, solvedSet }) 
           ))}
         </div>
       </div>
-      <div style={{display:'flex',alignItems:'center',gap:'20px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'14px'}}>
+        <button className="lb-btn" onClick={onShowLeaderboard} title="Leaderboard">
+          🏆 TOP SCORES
+        </button>
         <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.75rem',color:'var(--text-dim)'}}>
           SCORE: <span style={{color:'var(--neon)',fontFamily:"'Orbitron'"}}>{score}</span>
         </div>
@@ -1672,7 +2220,7 @@ function TabWarning({ count, onDismiss }) {
 }
 
 // ===== FINAL SCORE =====
-function FinalScreen({ questions, score, solvedSet, timeUsed, onRestart }) {
+function FinalScreen({ questions, score, solvedSet, timeUsed, onRestart, onShowLeaderboard, lbHighlightIndex }) {
   const maxScore = questions.reduce((s,q)=>s+q.points,0);
   const mins = Math.floor(timeUsed/60);
   const secs = timeUsed%60;
@@ -1689,6 +2237,15 @@ function FinalScreen({ questions, score, solvedSet, timeUsed, onRestart }) {
         <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.7rem',color:'var(--text-dim)',letterSpacing:'4px',marginBottom:'8px'}}>
           {solvedSet.size >= questions.length ? '// YOU SURVIVED THE DEBUG ARENA //' : '// SESSION TERMINATED //'}
         </div>
+
+        {lbHighlightIndex === 0 && score > 0 && (
+          <div className="new-record-badge" style={{display:'block',margin:'0 auto 12px'}}>🏆 #1 ALL-TIME HIGH SCORE</div>
+        )}
+        {lbHighlightIndex > 0 && lbHighlightIndex <= 2 && (
+          <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.7rem',color:'var(--neon)',textAlign:'center',letterSpacing:'2px',marginBottom:'12px'}}>
+            #{lbHighlightIndex+1} ON THE LEADERBOARD
+          </div>
+        )}
 
         <div className="score-circle">
           <div className="score-num" style={{color:rankColor}}>{score}</div>
@@ -1727,9 +2284,167 @@ function FinalScreen({ questions, score, solvedSet, timeUsed, onRestart }) {
           ))}
         </div>
 
-        <button className="btn btn-submit" onClick={onRestart} style={{padding:'12px 40px',fontSize:'0.75rem',letterSpacing:'3px',width:'100%'}}>
-          ↻ RESTART ARENA
-        </button>
+        <div style={{display:'flex',gap:'10px',flexDirection:'column'}}>
+          <button className="btn btn-submit" onClick={onShowLeaderboard} style={{padding:'12px 40px',fontSize:'0.75rem',letterSpacing:'3px',width:'100%'}}>
+            🏆 VIEW LEADERBOARD
+          </button>
+          <button className="btn btn-run" onClick={onRestart} style={{padding:'12px 40px',fontSize:'0.75rem',letterSpacing:'3px',width:'100%'}}>
+            ↻ RESTART ARENA
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== NAME ENTRY MODAL =====
+function NameEntryModal({ score, solved, total, timeUsed, questions, onSubmit }) {
+  const [name, setName] = React.useState('');
+  const maxScore = questions.reduce((s, q) => s + q.points, 0);
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  const isNewRecord = (() => {
+    const lb = loadLeaderboard();
+    return lb.length === 0 || score > lb[0].score;
+  })();
+
+  const handleSubmit = () => {
+    const finalName = name.trim() || 'ANONYMOUS';
+    const newIndex = addLeaderboardEntry(finalName, score, solved, total, timeUsed, questions);
+    onSubmit(newIndex);
+  };
+
+  const handleKey = (e) => {
+    if (e.key === 'Enter') handleSubmit();
+  };
+
+  return (
+    <div className="overlay" style={{zIndex:720}}>
+      <div className="name-modal">
+        {isNewRecord && score > 0 && (
+          <div className="new-record-badge">🏆 NEW HIGH SCORE</div>
+        )}
+        <div style={{fontSize:'2.5rem',marginBottom:'10px'}}>💾</div>
+        <div style={{fontFamily:"'Orbitron'",fontSize:'1.2rem',fontWeight:900,color:'var(--neon)',letterSpacing:'2px',marginBottom:'6px'}}>
+          SESSION COMPLETE
+        </div>
+        <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.72rem',color:'var(--text-dim)',letterSpacing:'3px',marginBottom:'18px'}}>
+          SAVE YOUR SCORE TO THE LEADERBOARD
+        </div>
+
+        <div style={{display:'flex',justifyContent:'center',gap:'24px',marginBottom:'20px'}}>
+          <div style={{textAlign:'center'}}>
+            <div style={{fontFamily:"'Orbitron'",fontSize:'1.8rem',fontWeight:900,color:'var(--neon)'}}>{score}</div>
+            <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.6rem',color:'var(--text-dim)',letterSpacing:'2px'}}>SCORE</div>
+          </div>
+          <div style={{textAlign:'center'}}>
+            <div style={{fontFamily:"'Orbitron'",fontSize:'1.8rem',fontWeight:900,color:'var(--neon)'}}>{solved}/{total}</div>
+            <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.6rem',color:'var(--text-dim)',letterSpacing:'2px'}}>SOLVED</div>
+          </div>
+          <div style={{textAlign:'center'}}>
+            <div style={{fontFamily:"'Orbitron'",fontSize:'1.8rem',fontWeight:900,color:'var(--neon)'}}>{pct}%</div>
+            <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.6rem',color:'var(--text-dim)',letterSpacing:'2px'}}>ACCURACY</div>
+          </div>
+        </div>
+
+        <input
+          className="name-input"
+          maxLength={12}
+          placeholder="ENTER CALLSIGN"
+          value={name}
+          onChange={e => setName(e.target.value.toUpperCase().replace(/[^A-Z0-9_\-]/g,''))}
+          onKeyDown={handleKey}
+          autoFocus
+        />
+        <div style={{fontFamily:"'Share Tech Mono'",fontSize:'0.62rem',color:'var(--text-dim)',marginBottom:'20px',letterSpacing:'1px'}}>
+          A-Z · 0-9 · _ · - · max 12 chars
+        </div>
+
+        <div style={{display:'flex',gap:'10px',justifyContent:'center'}}>
+          <button className="btn btn-submit" onClick={handleSubmit} style={{padding:'10px 28px'}}>
+            ⚡ SUBMIT SCORE
+          </button>
+          <button className="btn btn-skip" onClick={() => onSubmit(-1)} style={{padding:'10px 18px'}}>
+            SKIP
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== LEADERBOARD SCREEN =====
+function LeaderboardScreen({ onClose, highlightIndex }) {
+  const [entries, setEntries] = React.useState(loadLeaderboard());
+
+  const medals = ['🥇','🥈','🥉'];
+  const rankColors = ['var(--neon)','#88ccff','#6699cc'];
+
+  const handleClear = () => {
+    if (window.confirm('Clear all leaderboard data?')) {
+      saveLeaderboard([]);
+      setEntries([]);
+    }
+  };
+
+  return (
+    <div className="lb-screen">
+      <div className="lb-card">
+        <div className="lb-title">⚡ LEADERBOARD</div>
+        <div className="lb-subtitle">TOP {LB_MAX} HACKERS — LOCAL HALL OF FAME</div>
+
+        {entries.length === 0 ? (
+          <div className="lb-empty">
+            <div style={{fontSize:'2rem',marginBottom:'12px'}}>📭</div>
+            NO RECORDS YET<br/>
+            <span style={{fontSize:'0.62rem'}}>Complete a session to appear here</span>
+          </div>
+        ) : (
+          <div style={{overflowX:'auto'}}>
+            <table className="lb-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th style={{minWidth:'110px',textAlign:'left'}}>CALLSIGN</th>
+                  <th>SCORE</th>
+                  <th>SOLVED</th>
+                  <th>TIME</th>
+                  <th>RANK</th>
+                  <th>DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((e, i) => (
+                  <tr key={e.ts} className={`lb-row ${i===0?'top-1':i===1?'top-2':i===2?'top-3':''} ${i===highlightIndex?'new-entry':''}`}>
+                    <td className="lb-rank" style={{color: i < 3 ? rankColors[i] : 'var(--text-dim)'}}>
+                      {i < 3 ? <span className="lb-medal">{medals[i]}</span> : `${i+1}.`}
+                    </td>
+                    <td className="lb-name">
+                      {i === highlightIndex
+                        ? <span style={{color:'var(--neon)'}}>{e.name} <span style={{fontSize:'0.6rem',border:'1px solid var(--neon)',padding:'1px 5px',borderRadius:'2px',letterSpacing:'1px'}}>YOU</span></span>
+                        : e.name}
+                    </td>
+                    <td className="lb-score" style={{color: i < 3 ? rankColors[i] : 'var(--neon)'}}>{e.score}</td>
+                    <td className="lb-solved">{e.solved}/{e.total}</td>
+                    <td className="lb-time">{e.timeStr}</td>
+                    <td className="lb-date" style={{fontSize:'0.62rem',color: i===0?'var(--neon)':'var(--text-dim)'}}>{e.rank.split(' ')[0]}</td>
+                    <td className="lb-date">{e.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div style={{display:'flex',gap:'10px',justifyContent:'center',marginTop:'24px',flexWrap:'wrap'}}>
+          <button className="btn btn-submit" onClick={onClose} style={{padding:'10px 32px'}}>
+            CLOSE
+          </button>
+          {entries.length > 0 && (
+            <button className="btn btn-skip" onClick={handleClear} style={{padding:'10px 18px',borderColor:'rgba(255,34,68,0.4)',color:'rgba(255,34,68,0.6)'}}>
+              🗑 CLEAR
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1748,11 +2463,16 @@ function App() {
   const [activeTab, setActiveTab] = useState('output');
   const [customInput, setCustomInput] = useState('');
   const [language, setLanguage] = useState('javascript');
-  const [successModal, setSuccessModal] = useState(null); // question obj
-  const [failModal, setFailModal] = useState(null); // message
+  const [successModal, setSuccessModal] = useState(null);
+  const [failModal, setFailModal] = useState(null);
   const [tabWarning, setTabWarning] = useState(false);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const [pointsFlash, setPointsFlash] = useState(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showNameEntry, setShowNameEntry] = useState(false);
+  const [lbHighlightIndex, setLbHighlightIndex] = useState(-1);
+  // Session questions — 5 picked randomly each new session
+  const [sessionQuestions, setSessionQuestions] = useState(() => pickRandomQuestions());
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
   const timeUsedRef = useRef(0);
@@ -1768,8 +2488,16 @@ function App() {
           setTimeLeft(Math.max(0, TOTAL_TIME - elapsed));
           startTimeRef.current = data.startTime;
           if (data.score) setScore(data.score);
-          if (data.solved) { const validSolved = data.solved.filter(i => Number.isInteger(i) && i >= 0 && i < QUESTIONS.length); setSolvedSet(new Set(validSolved)); }
-          if (data.currentQ !== undefined && data.currentQ < QUESTIONS.length) setCurrentQ(data.currentQ);
+          // Restore the exact questions used in this session by their IDs
+          if (data.questionIds && Array.isArray(data.questionIds)) {
+            const restored = data.questionIds.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean);
+            if (restored.length === SESSION_SIZE) setSessionQuestions(restored);
+          }
+          if (data.solved) {
+            const validSolved = data.solved.filter(i => Number.isInteger(i) && i >= 0 && i < SESSION_SIZE);
+            setSolvedSet(new Set(validSolved));
+          }
+          if (data.currentQ !== undefined && data.currentQ < SESSION_SIZE) setCurrentQ(data.currentQ);
         } else {
           localStorage.removeItem(STORAGE_KEY);
         }
@@ -1804,7 +2532,8 @@ function App() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         startTime: startTimeRef.current,
         score, currentQ,
-        solved: [...solvedSet]
+        solved: [...solvedSet],
+        questionIds: sessionQuestions.map(q => q.id)
       }));
       if (remaining === 0) {
         clearInterval(timerRef.current);
@@ -1812,7 +2541,7 @@ function App() {
       }
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [phase, score, currentQ, solvedSet]);
+  }, [phase, score, currentQ, solvedSet, sessionQuestions]);
 
   const handleRunResult = useCallback((result) => {
     const lines = [];
@@ -1846,7 +2575,7 @@ function App() {
         if (result.time) lines.push(`⏱ Runtime: ${result.time}s`);
         if (result.memory) lines.push(`💾 Memory: ${Math.round(result.memory / 1024)}KB`);
         if (result.passed) {
-          const q = QUESTIONS[currentQ];
+          const q = sessionQuestions[currentQ];
           if (!solvedSet.has(currentQ)) {
             const newScore = score + q.points;
             setScore(newScore);
@@ -1868,21 +2597,23 @@ function App() {
       }
     }
     setOutputLines(lines);
-  }, [currentQ, score, solvedSet]);
+  }, [currentQ, score, solvedSet, sessionQuestions]);
 
   const handleNext = () => {
     setSuccessModal(null);
     setOutputLines([]);
-    if (currentQ < QUESTIONS.length - 1) {
+    if (currentQ < sessionQuestions.length - 1) {
       setCurrentQ(currentQ + 1);
     } else {
+      setShowNameEntry(true);
       setPhase('final');
     }
   };
 
   const handleSuccessClose = () => {
     setSuccessModal(null);
-    if (solvedSet.size >= QUESTIONS.length) {
+    if (solvedSet.size >= sessionQuestions.length) {
+      setShowNameEntry(true);
       setPhase('final');
     }
   };
@@ -1890,6 +2621,7 @@ function App() {
   const handleRestart = () => {
     localStorage.removeItem(STORAGE_KEY);
     startTimeRef.current = null;
+    setSessionQuestions(pickRandomQuestions());
     setPhase('loading');
     setCurrentQ(0);
     setScore(0);
@@ -1900,6 +2632,9 @@ function App() {
     setSuccessModal(null);
     setFailModal(null);
     setTabSwitchCount(0);
+    setShowLeaderboard(false);
+    setShowNameEntry(false);
+    setLbHighlightIndex(-1);
   };
 
   if (phase === 'loading') {
@@ -1907,20 +2642,52 @@ function App() {
   }
 
   if (phase === 'final') {
-    return <FinalScreen questions={QUESTIONS} score={score} solvedSet={solvedSet} timeUsed={timeUsedRef.current} onRestart={handleRestart} />;
+    return (
+      <>
+        {showNameEntry && (
+          <NameEntryModal
+            score={score}
+            solved={solvedSet.size}
+            total={sessionQuestions.length}
+            timeUsed={timeUsedRef.current}
+            questions={sessionQuestions}
+            onSubmit={(idx) => {
+              setLbHighlightIndex(idx);
+              setShowNameEntry(false);
+            }}
+          />
+        )}
+        {showLeaderboard && (
+          <LeaderboardScreen
+            onClose={() => setShowLeaderboard(false)}
+            highlightIndex={lbHighlightIndex}
+          />
+        )}
+        <FinalScreen
+          questions={sessionQuestions}
+          score={score}
+          solvedSet={solvedSet}
+          timeUsed={timeUsedRef.current}
+          onRestart={handleRestart}
+          onShowLeaderboard={() => setShowLeaderboard(true)}
+          lbHighlightIndex={lbHighlightIndex}
+        />
+      </>
+    );
   }
 
-  const question = QUESTIONS[currentQ];
+  const question = sessionQuestions[currentQ];
 
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100vh',position:'relative',zIndex:1}}>
       <Header
         timeLeft={timeLeft}
         currentQ={currentQ}
-        questions={QUESTIONS}
+        questions={sessionQuestions}
         score={score}
         onQSelect={setCurrentQ}
         solvedSet={solvedSet}
+        onShowLeaderboard={() => setShowLeaderboard(true)}
       />
       <div className="app-body">
         <LeftPanel question={question} language={language} />
@@ -1948,22 +2715,28 @@ function App() {
           question={successModal}
           onNext={handleNext}
           onClose={handleSuccessClose}
-          isLast={currentQ >= QUESTIONS.length - 1}
+          isLast={currentQ >= sessionQuestions.length - 1}
         />
       )}
       {failModal && (
         <FailModal message={failModal} onClose={() => setFailModal(null)} />
       )}
       {timeEnded && !successModal && (
-        <div className="times-up" onClick={() => setPhase('final')}>
+        <div className="times-up" onClick={() => { setShowNameEntry(true); setPhase('final'); }}>
           <div className="times-up-text">TIME'S UP</div>
           <div style={{fontFamily:"'Share Tech Mono'",color:'var(--text-dim)',marginTop:'20px',fontSize:'0.85rem',letterSpacing:'3px'}}>
             SESSION TERMINATED
           </div>
           <div style={{fontFamily:"'Share Tech Mono'",color:'rgba(255,34,68,0.5)',marginTop:'8px',fontSize:'0.75rem'}}>
-            Click to view final score
+            Click to save score &amp; view results
           </div>
         </div>
+      )}
+      {showLeaderboard && (
+        <LeaderboardScreen
+          onClose={() => setShowLeaderboard(false)}
+          highlightIndex={lbHighlightIndex}
+        />
       )}
       {pointsFlash && (
         <div className="points-flash">{pointsFlash}</div>
